@@ -10,8 +10,9 @@
   <script>
     var socket = io.connect('http;//localhost:8080');
     socket.on('message', function(data) {
+        console.log(data);
         const imageElem = document.getElementById("image");
-        imageElem.setAttribute("src", `data:image/jpeg;base64,${data}`)
+        imageElem.setAttribute("src", `data:image/jpeg;base64,${data}`);
     });
   </script>
 </body>
