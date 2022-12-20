@@ -6,7 +6,7 @@ import json
 from datetime import datetime
 
 camera = cv2.VideoCapture(0)
-scale_percent = 50
+scale_percent = 30
 
 
 async def send_images(websocket):
