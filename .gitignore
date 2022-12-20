@@ -1,0 +1,9 @@
+# JETBRAINS
+.idea/
+
+# PYTHON
+__pycache__/
+venv/
+
+# LOG-FILES
+*.log
