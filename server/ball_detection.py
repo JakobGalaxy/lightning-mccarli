@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 import imutils
 
-COLOR_RANGE: tuple[[int, int, int], [int, int, int]] = ((0, 90, 85), (40, 255, 255))
+COLOR_RANGE: tuple[[int, int, int], [int, int, int]] = ((0, 125, 85), (53, 255, 255))
 RADIUS_THRESHOLD: int = 10
 
 
