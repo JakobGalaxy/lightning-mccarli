@@ -10,6 +10,11 @@ scale_percent = 30
 
 
 async def send_images(websocket):
+    message = {
+      "channel": "control",
+      "type": "subscribe"
+    }
+    await websocket.send(json.dumps(message))
     while True:
         _, frame = camera.read()
         dims = frame.shape
@@ -31,7 +36,8 @@ async def send_images(websocket):
 async def receive_commands(websocket):
     while True:
         response = await websocket.recv()
-        print(response)
+        data = json.loads(response)
+        print(data)
 
 
 async def handler():
