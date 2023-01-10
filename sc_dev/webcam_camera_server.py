@@ -15,19 +15,20 @@ class MainHandler(tornado.web.RequestHandler):
         self.render('index.html')
 
 
-class ManipulatedHandler(tornado.websocket.WebSocketHandler):
-    connection = None
+class MovementHandler(tornado.websocket.WebSocketHandler):
+    connections = set()
 
     def check_origin(self, origin: str) -> bool:
         return True
 
     def open(self, *args: str, **kwargs: str):
-        print('new websocket manipulated from index.html')
-        self.connection = self
+        print('new websocket from movement')
+        self.connections.add(self)
 
     def on_close(self) -> None:
-        print('deleted websocket manipulated from index.html')
-        self.connection = None
+        print('deleted websocket from movement')
+        self.connection.remove(self)
+        
 
 # websocket connection from webpage / java script
 class WebsocketHandler(tornado.websocket.WebSocketHandler):
@@ -45,7 +46,12 @@ class WebsocketHandler(tornado.websocket.WebSocketHandler):
             self.connections.remove(self)
 
     def on_message(self, message):
-        print(f'{message}')
+        print(f'Websocket on_message: {message}')
+        # recalc the received moveController vales for GPIO
+        
+        # send to via movemenhandler to agent
+        [client.write_message(message)
+         for client in MovementHandler.connections]
 
 
 # camera connections via websockets
@@ -68,9 +74,6 @@ class CameraHandler(tornado.websocket.WebSocketHandler):
     def on_message(self, buffer):
         array_image = np.frombuffer(buffer, dtype=np.uint8)
         frame = cv.imdecode(array_image, cv.IMREAD_COLOR)
-        if ManipulatedHandler.connection is not None:
-            print("Send manipulated image")
-            ManipulatedHandler.connection.write_message(base64.b64encode(frame))
 
         frame = self.add_time(frame)
         #frame = self.make_some_noise(frame)
@@ -103,7 +106,7 @@ def make_app():
         (r'/', MainHandler),
         (r'/camera', CameraHandler),
         (r'/websocket', WebsocketHandler),
-        (r'/websocketManipulated', ManipulatedHandler),
+        (r'/movement', MovementHandler),
     ])
 
 
