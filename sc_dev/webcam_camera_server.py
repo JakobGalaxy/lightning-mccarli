@@ -44,6 +44,9 @@ class WebsocketHandler(tornado.websocket.WebSocketHandler):
         if self in self.connections:
             self.connections.remove(self)
 
+    def on_message(self, message):
+        print(f'{message}')
+
 
 # camera connections via websockets
 # https://www.tornadoweb.org/en/stable/websocket.html
