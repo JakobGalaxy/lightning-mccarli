@@ -20,6 +20,16 @@ function receive(data) {
     videoStreamDisplay.src = `data:image/png;base64,${data.frame}`;
 }
 
+function send_control() {
+    let message = {
+        "channel": "control",
+        "type": "publish",
+        "power": "true"
+    }
+    websocket.send(JSON.stringify(message));
+    console.log('sent control message');
+}
+
 function initWebsocket() {
     connect();
     websocket.onopen = () => {
@@ -36,4 +46,10 @@ function initWebsocket() {
 window.addEventListener("DOMContentLoaded", () => {
     videoStreamDisplay = document.getElementById("videoStreamDisplay");
     initWebsocket();
+});
+
+document.addEventListener("keypress", function (e) {
+    if (e.key === 'w') {
+        send_control();
+    }
 });
