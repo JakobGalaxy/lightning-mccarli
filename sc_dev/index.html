@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Camera</title>
+</head>
+<body>
+    <div>
+        <img id="image" alt="no image received"/>
+    </div>
+    <div>
+        <img id="imageManipulated" alt="No manipulated image receives"/>
+    </div>
+    <script type="text/javascript">
+        socketOrigin = new WebSocket("ws://localhost:8888/websocket");
+        socketManipulated = new WebSocket("ws://localhost:8888/websocketManipulated");
+
+        socketOrigin.onmessage = function (event){
+            const image = document.getElementById('image');
+            image.src = 'data:image/jpeg;base64,' + event.data;
+        }
+        socketManipulated.onmessage = function (event){
+            const image = document.getElementById('imageManipulated');
+            image.src = 'data:image/jpeg;base64,' + event.data;
+        }
+
+    </script>
+</body>
+</html>
