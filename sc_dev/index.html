@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Camera</title>
+</head>
+<body>
+    <div id="log">LogText</div>
+    <div>
+        <img id="image" alt="no image received"/>
+    </div>
+    <div>
+        <button type="submit" name="up" id="up">up</button>
+        <button type="submit" name="down" id="down">down</button>
+        <button type="submit" name="left" id="left">left</button>
+        <button type="submit" name="right" id="right">right</button>
+    </div>
+    <script type="text/javascript">
+        websocket = new WebSocket("ws://localhost:8888/websocket");
+
+        websocket.onmessage = function (event){
+            const image = document.getElementById('image');
+            image.src = 'data:image/jpeg;base64,' + event.data;
+        }
+        
+        var messageToSend = {
+            x : 0,
+            y : 0
+        };
+        
+        var btnUp = document.getElementById("up");
+        var btnDown = document.getElementById("down");
+        var btnLeft = document.getElementById("left");
+        var btnRight = document.getElementById("right");
+        btnUp.addEventListener("click", () => {
+            var log = document.getElementById("log");
+            log.innerText = "up";
+            messageToSend.x = 0;
+            messageToSend.y = 1;
+            websocket.send(JSON.stringify(messageToSend));
+        });
+        btnDown.addEventListener("click", () => {
+            var log = document.getElementById("log");
+            log.innerText = "down";
+            messageToSend.x = 0;
+            messageToSend.y = -1;
+            websocket.send(JSON.stringify(messageToSend));
+        });
+        btnLeft.addEventListener("click", () => {
+            var log = document.getElementById("log");
+            log.innerText = "left";
+            messageToSend.x = -1;
+            messageToSend.y = 0;
+            websocket.send(JSON.stringify(messageToSend));
+        });
+        btnRight.addEventListener("click", () => {
+            var log = document.getElementById("log");
+            log.innerText = "right";
+            messageToSend.x = 1;
+            messageToSend.y = 0;
+            websocket.send(JSON.stringify(messageToSend));
+        });
+
+    </script>
+</body>
+</html>
