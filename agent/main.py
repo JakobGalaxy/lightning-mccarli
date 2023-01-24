@@ -11,8 +11,8 @@ scale_percent = 30
 
 async def send_images(websocket):
     message = {
-      "channel": "control",
-      "type": "subscribe"
+        "channel": "control",
+        "type": "subscribe"
     }
     await websocket.send(json.dumps(message))
     while True:
@@ -37,7 +37,11 @@ async def receive_commands(websocket):
     while True:
         response = await websocket.recv()
         data = json.loads(response)
-        print(data)
+
+        x: float = data['x']
+        y: float = data['y']
+
+        print(f'x: {x}; y: {y}')
 
 
 async def handler():
@@ -46,6 +50,7 @@ async def handler():
             send_images(websocket),
             receive_commands(websocket)
         )
+
 
 if __name__ == "__main__":
     asyncio.run(handler())
