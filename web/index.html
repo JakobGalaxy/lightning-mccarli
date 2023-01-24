@@ -3,9 +3,48 @@
 <head>
     <title>Lightning-McCarli</title>
     <script src="main.js"></script>
+    <style>
+        .control-surface {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            width: 20vw;
+            height: 20vw;
+        }
+
+        .control-button {
+            width: 50%;
+            height: 50%;
+            font-size: 5vw;
+        }
+
+        .up {
+            background-color: #ff0000;
+        }
+
+        .left {
+            background-color: #00ff00;
+        }
+
+        .right {
+            background-color: #0000ff;
+        }
+
+        .down {
+            background-color: #ffff00;
+        }
+    </style>
 </head>
 <body>
 <h1>Lightning-McCarli</h1>
 <img id="videoStreamDisplay" style="height: 100vh">
+
+<div class="control-surface">
+    <button class="control-button up" id="up-button">↑</button>
+    <button class="control-button left" id="left-button">←</button>
+    <button class="control-button down" id="down-button">↓</button>
+    <button class="control-button right" id="right-button">→</button>
+</div>
 </body>
 </html>

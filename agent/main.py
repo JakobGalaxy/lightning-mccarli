@@ -10,6 +10,11 @@ scale_percent = 30
 
 
 async def send_images(websocket):
+    message = {
+        "channel": "control",
+        "type": "subscribe"
+    }
+    await websocket.send(json.dumps(message))
     while True:
         _, frame = camera.read()
         dims = frame.shape
@@ -31,7 +36,12 @@ async def send_images(websocket):
 async def receive_commands(websocket):
     while True:
         response = await websocket.recv()
-        print(response)
+        data = json.loads(response)
+
+        x: float = data['x']
+        y: float = data['y']
+
+        print(f'x: {x}; y: {y}')
 
 
 async def handler():
@@ -40,6 +50,7 @@ async def handler():
             send_images(websocket),
             receive_commands(websocket)
         )
+
 
 if __name__ == "__main__":
     asyncio.run(handler())

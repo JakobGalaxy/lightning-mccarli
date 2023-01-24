@@ -14,6 +14,27 @@ import cv2
 from ball_detection import detect_ball
 
 
+class ControlChannel:
+    def __init__(self):
+        self.__logger: Logger = logging.getLogger(self.__class__.__name__)
+        self.__subscribers: set = set()
+
+    async def handle_message(self, websocket, message):
+        message_type: str = message['type']
+
+        if message_type == 'subscribe':
+            self.__logger.debug(f'new client subscribed (count={len(self.__subscribers)})')
+            self.__subscribers.add(websocket)
+        elif message_type == 'publish':
+            await self.__handle_publish_message(message)
+        else:
+            self.__logger.warning(f'unknown message type={message_type} for control-channel')
+
+    async def __handle_publish_message(self, message):
+        self.__logger.debug('received publish message')
+        websockets.broadcast(self.__subscribers, json.dumps(message))
+
+
 class VideoStreamChannel:
     def __init__(self):
         self.__logger: Logger = logging.getLogger(self.__class__.__name__)
@@ -68,6 +89,7 @@ class WebSocketServer:
         self.__logger = logging.getLogger(self.__class__.__name__)
         self.__connections: set = set()
         self.__video_stream_channel: VideoStreamChannel = VideoStreamChannel()
+        self.__control_channel: ControlChannel = ControlChannel()
 
     async def __handle_message(self, websocket):
         async for message in websocket:
@@ -78,6 +100,8 @@ class WebSocketServer:
 
             if channel == 'video_stream':
                 await self.__video_stream_channel.handle_message(websocket, message)
+            elif channel == 'control':
+                await self.__control_channel.handle_message(websocket, message)
             else:
                 self.__logger.warning(f'unknown channel={channel}')
 
